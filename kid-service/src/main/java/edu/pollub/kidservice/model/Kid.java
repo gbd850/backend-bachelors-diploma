@@ -1,9 +1,6 @@
 package edu.pollub.kidservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +22,7 @@ public class Kid {
     private String lastName;
     private String pesel;
     private Date birthDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "kid_id", referencedColumnName = "id")
+    private Catering catering;
 }
