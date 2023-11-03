@@ -1,4 +1,4 @@
-package edu.pollub.dictionaryservice.model;
+package edu.pollub.kidservice.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

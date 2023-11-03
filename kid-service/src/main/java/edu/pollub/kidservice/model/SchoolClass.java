@@ -1,28 +1,24 @@
-package edu.pollub.messageservice.model;
+package edu.pollub.kidservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class SchoolClass {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String content;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sender_id",
+    @JoinColumn(name = "teacher_id",
             referencedColumnName = "id")
-    private User sender;
+    private User teacher;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "receiver_id",
+    @JoinColumn(name = "schedule_id",
             referencedColumnName = "id")
-    private User receiver;
-    private Date sentAt;
+    private Schedule schedule;
 }

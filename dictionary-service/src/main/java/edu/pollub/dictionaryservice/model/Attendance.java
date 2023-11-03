@@ -4,22 +4,25 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.User;
+
+import java.util.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Class {
+public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private Date date;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "teacher_id",
+    @JoinColumn(name = "kid_id",
             referencedColumnName = "id")
-    private User teacher;
+    private Kid kid;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "schedule_id",
+    @JoinColumn(name = "class_id",
             referencedColumnName = "id")
-    private Schedule schedule;
+    private SchoolClass aClass;
+    private boolean isPresent;
 }
