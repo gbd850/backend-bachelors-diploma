@@ -1,9 +1,6 @@
 package edu.pollub.dictionaryservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +14,21 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private Schedule schedule;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "group_class",
+            joinColumns = { @JoinColumn(
+                    name = "group_id",
+                    referencedColumnName = "id"
+            ) },
+            inverseJoinColumns = { @JoinColumn(
+                    name = "class_id",
+                    referencedColumnName = "id"
+            ) }
+    )
+    private Class aClass;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "facility_id",
+            referencedColumnName = "id")
+    private Facility facility;
 }

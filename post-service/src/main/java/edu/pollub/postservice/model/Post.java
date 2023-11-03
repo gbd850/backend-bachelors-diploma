@@ -1,9 +1,6 @@
 package edu.pollub.postservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +14,11 @@ import java.sql.Date;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String content;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "creator_id",
+    referencedColumnName = "id")
+    private User creator;
     private Date createdAt;
 }

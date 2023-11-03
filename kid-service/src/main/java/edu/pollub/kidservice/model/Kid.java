@@ -23,6 +23,9 @@ public class Kid {
     private String pesel;
     private Date birthDate;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "kid_id", referencedColumnName = "id")
+    @JoinColumn(name = "catering_id", referencedColumnName = "id")
     private Catering catering;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    private User parent;
 }

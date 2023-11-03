@@ -3,6 +3,7 @@ package edu.pollub.accountservice.controller;
 import edu.pollub.accountservice.dto.UserRequest;
 import edu.pollub.accountservice.model.User;
 import edu.pollub.accountservice.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class UserController {
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User saveUser(@RequestBody UserRequest user) {
+    public User saveUser(@Valid @RequestBody UserRequest user) {
         return userService.saveUser(user);
     }
 

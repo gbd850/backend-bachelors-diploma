@@ -1,4 +1,4 @@
-package edu.pollub.accountservice.model;
+package edu.pollub.postservice.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -5,17 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+import java.sql.Time;
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
-    private List<Activity> monday;
-    private List<Activity> tuesday;
-    private List<Activity> wednesday;
-    private List<Activity> thursday;
-    private List<Activity> friday;
+    private Long id;
+    private String dayOfWeek;
+    private Time startTime;
+    private Time endTime;
 
 }

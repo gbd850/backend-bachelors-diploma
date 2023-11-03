@@ -1,6 +1,7 @@
 package edu.pollub.accountservice.service;
 
 import edu.pollub.accountservice.dto.UserRequest;
+import edu.pollub.accountservice.model.Role;
 import edu.pollub.accountservice.model.User;
 import edu.pollub.accountservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class UserService {
                 .lastName(userRequest.getLastName())
                 .password(userRequest.getPassword())
                 .pesel(userRequest.getPesel())
-                .role(userRequest.getRole())
+                .role(Role.PARENT.getValue())
                 .createdAt(new Date(Calendar.getInstance().getTime().getTime()))
                 .build();
         return userRepository.save(user);
