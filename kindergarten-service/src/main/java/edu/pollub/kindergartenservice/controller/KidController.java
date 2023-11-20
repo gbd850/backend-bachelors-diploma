@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/kid")
+@RequestMapping("/api/kid")
 @RequiredArgsConstructor
 public class KidController {
     private KidService kidService;

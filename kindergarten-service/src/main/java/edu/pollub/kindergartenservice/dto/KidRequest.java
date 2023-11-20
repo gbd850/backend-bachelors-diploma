@@ -15,4 +15,6 @@ public class KidRequest {
     private String lastName;
     private String pesel;
     private Date birthDate;
+    private Long parentId;
+    private Integer groupId;
 }
