@@ -1,4 +1,4 @@
-package edu.pollub.dictionaryservice.model;
+package edu.pollub.kindergartenservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

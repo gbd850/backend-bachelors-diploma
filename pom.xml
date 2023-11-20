@@ -19,8 +19,7 @@
         <module>account-service</module>
         <module>message-service</module>
         <module>post-service</module>
-        <module>kid-service</module>
-        <module>dictionary-service</module>
+        <module>kindergarten-service</module>
         <module>catering-service</module>
         <module>gallery-service</module>
     </modules>

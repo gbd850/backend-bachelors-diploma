@@ -1,11 +1,11 @@
-package edu.pollub.dictionaryservice.repository;
+package edu.pollub.kindergartenservice.repository;
 
-import edu.pollub.dictionaryservice.model.Facility;
+import edu.pollub.kindergartenservice.model.SchoolClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public interface FacilityRepository extends JpaRepository<Facility, Integer> {
+public interface SchoolClassRepository extends JpaRepository<SchoolClass, Long> {
 }

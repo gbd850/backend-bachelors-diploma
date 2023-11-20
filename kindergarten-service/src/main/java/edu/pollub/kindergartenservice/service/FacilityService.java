@@ -1,4 +1,4 @@
-package edu.pollub.dictionaryservice.service;
+package edu.pollub.kindergartenservice.service;
 
 import org.springframework.stereotype.Service;
 
