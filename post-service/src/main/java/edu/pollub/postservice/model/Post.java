@@ -16,9 +16,6 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "creator_id",
-    referencedColumnName = "id")
-    private User creator;
+    private Long creatorId;
     private Date createdAt;
 }

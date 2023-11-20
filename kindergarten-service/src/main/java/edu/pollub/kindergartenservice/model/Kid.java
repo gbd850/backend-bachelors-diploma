@@ -26,10 +26,7 @@ public class Kid {
 //    @JoinColumn(name = "catering_id",
 //            referencedColumnName = "id")
 //    private Catering catering;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_id",
-            referencedColumnName = "id")
-    private User parent;
+    private Long parentId;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id",
             referencedColumnName = "id")

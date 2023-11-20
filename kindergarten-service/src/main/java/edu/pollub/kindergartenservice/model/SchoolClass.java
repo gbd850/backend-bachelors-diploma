@@ -13,10 +13,7 @@ public class SchoolClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "teacher_id",
-            referencedColumnName = "id")
-    private User teacher;
+    private Long teacherId;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "schedule_id",
             referencedColumnName = "id")
