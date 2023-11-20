@@ -10,9 +10,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GalleryService {
-    private GalleryRepository galleryRepository;
+    private final GalleryRepository galleryRepository;
 
     public List<Image> getAllImages() {
         return galleryRepository.findAll();
+    }
+
+    public Image saveImage(String imageUrl) {
+        Image newImage = Image.builder().imageUrl(imageUrl).build();
+        return galleryRepository.save(newImage);
     }
 }
