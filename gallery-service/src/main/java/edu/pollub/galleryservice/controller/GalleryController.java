@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/gallery")
+@RequestMapping("/api/gallery")
 @RequiredArgsConstructor
 @Slf4j
 public class GalleryController {
