@@ -16,13 +16,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String content;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sender_id",
-            referencedColumnName = "id")
-    private User sender;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "receiver_id",
-            referencedColumnName = "id")
-    private User receiver;
+    private Long senderId;
+    private Long receiverId;
     private Date sentAt;
 }

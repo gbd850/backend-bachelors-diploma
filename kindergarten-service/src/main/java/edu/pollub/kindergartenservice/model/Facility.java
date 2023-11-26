@@ -1,21 +1,19 @@
-package edu.pollub.postservice.model;
+package edu.pollub.kindergartenservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+@Builder
+public class Facility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String content;
-    private Long creatorId;
-    private Date createdAt;
+    private Integer id;
+    private String name;
 }
