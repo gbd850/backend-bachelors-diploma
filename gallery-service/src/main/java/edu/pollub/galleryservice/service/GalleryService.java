@@ -3,7 +3,6 @@ package edu.pollub.galleryservice.service;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.OAuth2Utils;
 import com.google.auth.oauth2.UserCredentials;
 import com.google.cloud.http.HttpTransportOptions;
 import com.google.cloud.storage.BlobId;
@@ -26,10 +25,7 @@ public class GalleryService {
     private final ConfigProperties configProperties;
 
     public void uploadObject(String projectId, String bucketName, String objectName, byte[] object) throws IOException {
-        Credentials credentials = GoogleCredentials
-                .fromStream(new FileInputStream("src/main/resources/creds.json"));
-
-        UserCredentials.newBuilder()
+        Credentials credentials = UserCredentials.newBuilder()
                 .setClientId(configProperties.getClientId())
                 .setClientSecret(configProperties.getClientSecret())
                 .setRefreshToken(configProperties.getRefreshToken())
