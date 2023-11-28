@@ -1,0 +1,57 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    root: INFO
+
+## Routes
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        ## Account Service
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/api/user/**
+        ## Order Service
+        - id: gallery-service
+          uri: lb://gallery-service
+          predicates:
+            - Path=/api/gallery/**
+        ## Kindergarten Service
+        - id: kindergarten-service
+          uri: lb://kindergarten-service
+          predicates:
+            - Path=/api/kid/**
+            - Path=/api/facility/**
+        ## Message Service
+        - id: message-service
+          uri: lb://message-service
+          predicates:
+            - Path=/api/message/**
+        ## Post Service
+        - id: post-service
+          uri: lb://post-service
+          predicates:
+            - Path=/api/post/**
+        ## Discovery Server
+        - id: discovery-server
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/web
+          filters:
+            - SetPath=/
+        ## Discovery Server Static Resources
+        - id: discovery-server-static
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/**
+
+server:
+  port: 8080

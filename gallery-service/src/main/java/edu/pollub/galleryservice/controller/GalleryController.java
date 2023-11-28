@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/gallery")
+@RequestMapping("/api/gallery")
 @RequiredArgsConstructor
 @Slf4j
 public class GalleryController {
