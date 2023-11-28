@@ -18,28 +18,28 @@ spring:
         - id: account-service
           uri: lb://account-service
           predicates:
-            - Path=/api/user
+            - Path=/api/user/**
         ## Order Service
         - id: gallery-service
           uri: lb://gallery-service
           predicates:
-            - Path=/api/gallery
+            - Path=/api/gallery/**
         ## Kindergarten Service
         - id: kindergarten-service
           uri: lb://kindergarten-service
           predicates:
-            - Path=/api/kid
-            - Path=/api/facility
+            - Path=/api/kid/**
+            - Path=/api/facility/**
         ## Message Service
         - id: message-service
           uri: lb://message-service
           predicates:
-            - Path=/api/message
+            - Path=/api/message/**
         ## Post Service
         - id: post-service
           uri: lb://post-service
           predicates:
-            - Path=/api/post
+            - Path=/api/post/**
         ## Discovery Server
         - id: discovery-server
           uri: http://localhost:8761
