@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
+@Table(name = "school_group")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,19 +19,8 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "group_class",
-            joinColumns = { @JoinColumn(
-                    name = "group_id",
-                    referencedColumnName = "id"
-            ) },
-            inverseJoinColumns = { @JoinColumn(
-                    name = "class_id",
-                    referencedColumnName = "id"
-            ) }
-    )
-    private SchoolClass aClass;
+    @OneToMany(mappedBy = "group")
+    private List<SchoolClass> aClass;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "facility_id",
             referencedColumnName = "id")
