@@ -23,6 +23,7 @@ public class MessageService {
     }
 
     public Message createMessage(MessageRequestDto messageRequestDto) {
+        //TODO call to account-service to check sender and receiver valid id
         Message message = Message.builder()
                 .content(messageRequestDto.getContent())
                 .senderId(messageRequestDto.getSenderId())
