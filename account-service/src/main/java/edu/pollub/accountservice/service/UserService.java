@@ -29,7 +29,7 @@ public class UserService {
                 .lastName(userRequest.getLastName())
                 .password(userRequest.getPassword())
                 .pesel(userRequest.getPesel())
-                .role(Role.PARENT)
+                .role(Role.valueOf(userRequest.getRole().toUpperCase()))
                 .createdAt(new Date(Calendar.getInstance().getTime().getTime()))
                 .build();
         return userRepository.save(user);
