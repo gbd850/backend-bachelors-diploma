@@ -1,5 +1,6 @@
 package edu.pollub.accountservice.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,10 +15,12 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class WebConfig {
     private static final String[] WHITE_LIST_URL = {
-            "/register",
-            "/login"
+            "/api/user/register",
+            "/api/user/login",
+            "/api/user/validateToken"
     };
 
     private JwtAuthenticationFilter jwtAuthFilter;
