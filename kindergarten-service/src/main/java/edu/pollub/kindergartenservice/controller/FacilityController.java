@@ -1,6 +1,7 @@
 package edu.pollub.kindergartenservice.controller;
 
 import edu.pollub.kindergartenservice.dto.FacilityRequest;
+import edu.pollub.kindergartenservice.dto.FacilitySummaryResponse;
 import edu.pollub.kindergartenservice.dto.GroupRequest;
 import edu.pollub.kindergartenservice.dto.SchoolClassRequest;
 import edu.pollub.kindergartenservice.model.Facility;
@@ -8,6 +9,7 @@ import edu.pollub.kindergartenservice.model.Group;
 import edu.pollub.kindergartenservice.model.SchoolClass;
 import edu.pollub.kindergartenservice.service.FacilityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,11 @@ public class FacilityController {
         return facilityService.getAllFacilities();
     }
 
+    @GetMapping("/{facilityId}/summary")
+    public ResponseEntity<FacilitySummaryResponse> getFacilitySummary(@PathVariable Integer facilityId) {
+        return new ResponseEntity<>(facilityService.getFacilitySummary(facilityId), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Facility> createFacility(@RequestBody FacilityRequest facilityRequest) {
         return facilityService.createFacility(facilityRequest);
@@ -33,6 +40,11 @@ public class FacilityController {
     @GetMapping("groups")
     public ResponseEntity<List<Group>> getAllGroups() {
         return facilityService.getAllGroups();
+    }
+
+    @GetMapping("groups/{facilityId}")
+    public ResponseEntity<List<Group>> getAllGroupsInFacility(@PathVariable Integer facilityId) {
+        return new ResponseEntity<>(facilityService.getAllGroupsInFacility(facilityId), HttpStatus.OK);
     }
 
     @PostMapping("groups")
