@@ -75,6 +75,10 @@ public class UserService implements UserDetailsService {
     public Boolean validateToken(TokenRequest tokenRequest) {
         String email = jwtService.extractUsername(tokenRequest.getToken());
         UserDetails userDetails = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return jwtService.isTokenValid(tokenRequest.getToken(), userDetails);
+        boolean isTokenValid = jwtService.isTokenValid(tokenRequest.getToken(), userDetails);
+        if (!isTokenValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        return true;
     }
 }

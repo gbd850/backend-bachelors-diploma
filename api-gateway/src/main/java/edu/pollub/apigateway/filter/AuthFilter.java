@@ -5,13 +5,14 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
@@ -34,28 +35,28 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         return ((exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Authorization not found");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization not found");
                 }
                 final String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not found");
                 }
                 final String jwt = authHeader.substring(7);
 
-                MultiValueMap<String, String> bodyValues = new LinkedMultiValueMap<>();
+                String body = "{\n" +
+                        "\"token\":\""+jwt +
+                        "\"\n}";
 
-                bodyValues.add("token", jwt);
-
-                Boolean isTokenValid = webClientBuilder.build().post()
+                return webClientBuilder.build().post()
                         .uri("http://account-service/api/user/validateToken")
-                        .contentType(MediaType.TEXT_PLAIN)
-                        .body(BodyInserters.fromFormData(bodyValues))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(body))
                         .retrieve()
+                        .onStatus(HttpStatusCode::is4xxClientError, response ->
+                            Mono.error(new WebClientResponseException(HttpStatus.UNAUTHORIZED, "Invalid token", null, null, null, null))
+                        )
                         .bodyToMono(Boolean.class)
-                        .block();
-                if (Boolean.FALSE.equals(isTokenValid)) {
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
-                }
+                        .flatMap(s -> chain.filter(exchange));
             }
             return chain.filter(exchange);
         });

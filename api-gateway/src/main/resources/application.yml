@@ -19,8 +19,6 @@ spring:
           uri: lb://account-service
           predicates:
             - Path=/api/user/**
-          filters:
-            - AuthFilter
         ## Gallery Service
         - id: gallery-service
           uri: lb://gallery-service
@@ -28,11 +26,17 @@ spring:
             - Path=/api/gallery/**
           filters:
             - AuthFilter
-        ## Kindergarten Service
-        - id: kindergarten-service
-          uri: lb://kindergarten-service
+        ## Kindergarten Service Kid
+        - id: kindergarten-service-kid
+          uri: lb://KINDERGARTEN-SERVICE/
           predicates:
             - Path=/api/kid/**
+          filters:
+            - AuthFilter
+        ## Kindergarten Service Facility
+        - id: kindergarten-service-facility
+          uri: lb://KINDERGARTEN-SERVICE/
+          predicates:
             - Path=/api/facility/**
           filters:
             - AuthFilter
