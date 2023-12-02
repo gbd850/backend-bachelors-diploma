@@ -19,27 +19,41 @@ spring:
           uri: lb://account-service
           predicates:
             - Path=/api/user/**
-        ## Order Service
+        ## Gallery Service
         - id: gallery-service
           uri: lb://gallery-service
           predicates:
             - Path=/api/gallery/**
-        ## Kindergarten Service
-        - id: kindergarten-service
-          uri: lb://kindergarten-service
+          filters:
+            - AuthFilter
+        ## Kindergarten Service Kid
+        - id: kindergarten-service-kid
+          uri: lb://KINDERGARTEN-SERVICE/
           predicates:
             - Path=/api/kid/**
+          filters:
+            - AuthFilter
+        ## Kindergarten Service Facility
+        - id: kindergarten-service-facility
+          uri: lb://KINDERGARTEN-SERVICE/
+          predicates:
             - Path=/api/facility/**
+          filters:
+            - AuthFilter
         ## Message Service
         - id: message-service
           uri: lb://message-service
           predicates:
             - Path=/api/message/**
+          filters:
+            - AuthFilter
         ## Post Service
         - id: post-service
           uri: lb://post-service
           predicates:
             - Path=/api/post/**
+          filters:
+            - AuthFilter
         ## Discovery Server
         - id: discovery-server
           uri: http://localhost:8761
