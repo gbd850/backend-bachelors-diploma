@@ -12,7 +12,6 @@ import java.sql.Time;
 @AllArgsConstructor
 public class SchoolClassRequest {
     private String name;
-    private Long teacherId;
     private String dayOfWeek;
     private Time startTime;
     private Time endTime;

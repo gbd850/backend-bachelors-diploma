@@ -48,13 +48,12 @@ public class FacilityService {
     }
 
     public ResponseEntity<Group> createGroup(GroupRequest groupRequest) {
-        Optional<Facility> facility = facilityRepository.findById(groupRequest.getFacilityId());
-        if (facility.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Facility not found");
-        }
+        Facility facility = facilityRepository.findById(groupRequest.getFacilityId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Facility not found"));
         Group group = Group.builder()
                 .name(groupRequest.getName())
-                .facility(facility.get())
+                .facility(facility)
+                .teacherId(groupRequest.getTeacherId())
                 .build();
         groupRepository.save(group);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
@@ -76,7 +75,6 @@ public class FacilityService {
         }
         SchoolClass.SchoolClassBuilder schoolClass = SchoolClass.builder()
                 .name(schoolClassRequest.getName())
-                .teacherId(schoolClassRequest.getTeacherId())
                 .group(group.get());
 
         Optional<Schedule> schedule = scheduleRepository.findByDayOfWeekAndStartTimeAndEndTime(

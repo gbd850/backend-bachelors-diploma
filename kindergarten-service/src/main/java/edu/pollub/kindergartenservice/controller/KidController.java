@@ -38,4 +38,11 @@ public class KidController {
     public ResponseEntity<Attendance> markKidAttendance(@PathVariable Integer kidId, @RequestBody AttendanceRequest attendanceRequest) {
         return kidService.markKidAttendance(kidId, attendanceRequest);
     }
+
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<Kid>> getKidsByGroup(@PathVariable Integer groupId) {
+        return new ResponseEntity<>(kidService.getKidsByGroup(groupId), HttpStatus.OK);
+    }
+
+
 }

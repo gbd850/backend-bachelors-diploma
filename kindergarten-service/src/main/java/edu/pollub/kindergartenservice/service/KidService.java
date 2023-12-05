@@ -54,24 +54,29 @@ public class KidService {
     }
 
     public ResponseEntity<Attendance> markKidAttendance(Integer kidId, AttendanceRequest attendanceRequest) {
-        Optional<Kid> kid = kidRepository.findById(kidId);
-        if (kid.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Kid not found");
-        }
-        Optional<SchoolClass> schoolClass = schoolClassRepository.findById(attendanceRequest.getSchoolClassId());
-        if (schoolClass.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "School class not found");
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Kid not found"));
+        SchoolClass schoolClass = null;
+        if (attendanceRequest.getSchoolClassId() != null) {
+            schoolClass = schoolClassRepository.findById(attendanceRequest.getSchoolClassId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "School class not found"));
         }
         if (attendanceRequest.getDate() == null) {
             attendanceRequest.setDate(new Date(new java.util.Date().getTime()));
         }
         Attendance attendance = Attendance.builder()
                 .date(attendanceRequest.getDate())
-                .kid(kid.get())
-                .aClass(schoolClass.get())
+                .kid(kid)
+                .aClass(schoolClass)
                 .isPresent(attendanceRequest.isPresent())
                 .build();
         attendanceRepository.save(attendance);
         return new ResponseEntity<>(attendance, HttpStatus.CREATED);
+    }
+
+    public List<Kid> getKidsByGroup(Integer groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
+        return kidRepository.findByGroupId(groupId);
     }
 }

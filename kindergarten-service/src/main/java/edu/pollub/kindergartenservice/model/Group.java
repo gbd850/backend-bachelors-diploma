@@ -19,6 +19,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private Long teacherId;
     @OneToMany(mappedBy = "group")
     private List<SchoolClass> aClass;
     @ManyToOne(cascade = CascadeType.ALL)
