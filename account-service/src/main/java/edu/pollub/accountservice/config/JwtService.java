@@ -1,7 +1,13 @@
 package edu.pollub.accountservice.config;
 
+import edu.pollub.accountservice.model.User;
+import edu.pollub.accountservice.repository.UserRepository;
+import edu.pollub.accountservice.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -16,7 +22,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+
+    private final UserRepository userRepository;
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
@@ -56,10 +65,12 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Email not found"));
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
+                .setClaims(Map.of("userId", user.getId(), "role", user.getRole().name()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
