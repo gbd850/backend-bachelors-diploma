@@ -37,12 +37,17 @@ public class FacilityController {
         return facilityService.createFacility(facilityRequest);
     }
 
-    @GetMapping("groups")
+    @GetMapping("/groups")
     public ResponseEntity<List<Group>> getAllGroups() {
         return facilityService.getAllGroups();
     }
 
-    @GetMapping("groups/{facilityId}")
+    @GetMapping("/groups/{groupId}")
+    public ResponseEntity<Group> getGroupById(@PathVariable Integer groupId) {
+        return new ResponseEntity<>(facilityService.getGroupById(groupId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{facilityId}/groups")
     public ResponseEntity<List<Group>> getAllGroupsInFacility(@PathVariable Integer facilityId) {
         return new ResponseEntity<>(facilityService.getAllGroupsInFacility(facilityId), HttpStatus.OK);
     }
