@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class GroupRequest {
-    private String name;
-    private Integer facilityId;
-    private Long teacherId;
+@NoArgsConstructor
+public class AccountResponse {
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String role;
 }

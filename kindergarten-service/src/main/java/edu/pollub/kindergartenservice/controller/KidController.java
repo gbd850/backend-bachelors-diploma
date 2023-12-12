@@ -2,6 +2,7 @@ package edu.pollub.kindergartenservice.controller;
 
 import edu.pollub.kindergartenservice.dto.AttendanceRequest;
 import edu.pollub.kindergartenservice.dto.KidRequest;
+import edu.pollub.kindergartenservice.dto.ParentResponse;
 import edu.pollub.kindergartenservice.model.Attendance;
 import edu.pollub.kindergartenservice.model.Kid;
 import edu.pollub.kindergartenservice.service.KidService;
@@ -38,4 +39,23 @@ public class KidController {
     public ResponseEntity<Attendance> markKidAttendance(@PathVariable Integer kidId, @RequestBody AttendanceRequest attendanceRequest) {
         return kidService.markKidAttendance(kidId, attendanceRequest);
     }
+
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<Kid>> getKidsByGroup(@PathVariable Integer groupId) {
+        return new ResponseEntity<>(kidService.getKidsByGroup(groupId), HttpStatus.OK);
+    }
+
+    @GetMapping("{kidId}/parents")
+    public ResponseEntity<ParentResponse> getKidParent(@PathVariable Integer kidId) {
+        return new ResponseEntity<>(kidService.getKidParent(kidId), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Kid> getKidByFirstNameAndLastName(
+            @RequestParam(value = "firstName") String firstName,
+            @RequestParam(value = "lastName") String lastName
+    ) {
+        return new ResponseEntity<>(kidService.getKidByFirstAndLastName(firstName, lastName), HttpStatus.OK);
+    }
+
 }
