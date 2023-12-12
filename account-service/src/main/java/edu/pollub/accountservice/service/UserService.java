@@ -1,6 +1,7 @@
 package edu.pollub.accountservice.service;
 
 import edu.pollub.accountservice.config.JwtService;
+import edu.pollub.accountservice.dto.AccountResponse;
 import edu.pollub.accountservice.dto.LoginRequest;
 import edu.pollub.accountservice.dto.TokenRequest;
 import edu.pollub.accountservice.dto.UserRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -80,5 +82,24 @@ public class UserService implements UserDetailsService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
         }
         return true;
+    }
+
+    public List<AccountResponse> getAccountsBasedOnRole(String accountRole) {
+        try {
+            Role role = Role.valueOf(accountRole.toUpperCase());
+            return userRepository.findByRole(role.name()).stream()
+                    .map(user -> new AccountResponse(
+                            user.getId(),
+                            user.getEmail(),
+                            user.getFirstName(),
+                            user.getMiddleName(),
+                            user.getLastName(),
+                            user.getRole()
+                    ))
+                    .collect(Collectors.toList());
+        }
+        catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found");
+        }
     }
 }
