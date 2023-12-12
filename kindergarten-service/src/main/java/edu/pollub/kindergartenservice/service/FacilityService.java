@@ -129,4 +129,9 @@ public class FacilityService {
                 .build();
 
     }
+
+    public Group getGroupById(Integer groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
+    }
 }
