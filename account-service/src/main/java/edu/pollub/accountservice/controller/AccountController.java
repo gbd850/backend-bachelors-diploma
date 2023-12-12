@@ -24,4 +24,8 @@ public class AccountController {
             ) {
         return new ResponseEntity<>(userService.getAccountsBasedOnRole(role), HttpStatus.OK);
     }
+    @GetMapping
+    public ResponseEntity<List<AccountResponse>> getAccountsByIds(@RequestParam(value = "ids[]") Integer[] ids) {
+        return new ResponseEntity<>(userService.getAccountsByIds(ids), HttpStatus.OK);
+    }
 }

@@ -11,6 +11,7 @@ import edu.pollub.accountservice.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,5 +103,22 @@ public class UserService implements UserDetailsService {
         catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found");
         }
+    }
+
+    public List<AccountResponse> getAccountsByIds(Integer[] ids) {
+        List<Integer> idList = Arrays.stream(ids).toList();
+        for (Integer id : idList) {
+            userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        }
+        return userRepository.findAllById(idList).stream()
+                .map(user -> new AccountResponse(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getMiddleName(),
+                        user.getLastName(),
+                        user.getRole()
+                ))
+                .collect(Collectors.toList());
     }
 }
