@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FacilityRequest {
     private String name;
+    private Integer principalId;
 }

@@ -34,8 +34,20 @@ public class FacilityService {
     }
 
     public ResponseEntity<Facility> createFacility(FacilityRequest facilityRequest) {
+        AccountResponse principal = webClientBuilder.build().get()
+                .uri("http://account-service/api/users/"+facilityRequest.getPrincipalId())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new WebClientResponseException(HttpStatus.NOT_FOUND, "Principal not found", null, null, null, null))
+                )
+                .bodyToMono(AccountResponse.class)
+                .block();
+        if (principal == null || principal.getRole().equalsIgnoreCase("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Principal not found");
+        }
         Facility facility = Facility.builder()
                 .name(facilityRequest.getName())
+                .principalId(facilityRequest.getPrincipalId())
                 .build();
         facilityRepository.save(facility);
         return new ResponseEntity<>(facility, HttpStatus.CREATED);

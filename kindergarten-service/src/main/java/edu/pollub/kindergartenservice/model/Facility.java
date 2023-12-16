@@ -16,4 +16,5 @@ public class Facility {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private Integer principalId;
 }
