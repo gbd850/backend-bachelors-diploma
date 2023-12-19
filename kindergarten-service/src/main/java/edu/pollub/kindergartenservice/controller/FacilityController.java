@@ -27,6 +27,11 @@ public class FacilityController {
         return facilityService.getAllFacilities();
     }
 
+    @GetMapping("/principal/{principalId}")
+    public ResponseEntity<List<Facility>> getAllFacilitiesByPrincipal(@PathVariable Integer principalId) {
+        return new ResponseEntity<>(facilityService.getAllFacilitiesByPrincipal(principalId), HttpStatus.OK);
+    }
+
     @GetMapping("/{facilityId}/summary")
     public ResponseEntity<FacilitySummaryResponse> getFacilitySummary(@PathVariable Integer facilityId) {
         return new ResponseEntity<>(facilityService.getFacilitySummary(facilityId), HttpStatus.OK);
