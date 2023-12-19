@@ -42,7 +42,7 @@ public class FacilityService {
                 )
                 .bodyToMono(AccountResponse.class)
                 .block();
-        if (principal == null || principal.getRole().equalsIgnoreCase("ADMIN")) {
+        if (principal == null || !principal.getRole().equalsIgnoreCase("ADMIN")) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Principal not found");
         }
         Facility facility = Facility.builder()
@@ -173,5 +173,20 @@ public class FacilityService {
                         findGroupInCollectionByTeacherId(groups, teacher.getId()).getId()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public List<Facility> getAllFacilitiesByPrincipal(Integer principalId) {
+        AccountResponse principal = webClientBuilder.build().get()
+                .uri("http://account-service/api/users/"+principalId)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new WebClientResponseException(HttpStatus.NOT_FOUND, "Principal not found", null, null, null, null))
+                )
+                .bodyToMono(AccountResponse.class)
+                .block();
+        if (principal== null || !principal.getRole().equalsIgnoreCase("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Principal not found");
+        }
+        return facilityRepository.findByPrincipalId(principalId);
     }
 }
