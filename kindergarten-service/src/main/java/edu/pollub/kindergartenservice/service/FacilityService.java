@@ -1,24 +1,21 @@
 package edu.pollub.kindergartenservice.service;
 
-import edu.pollub.kindergartenservice.dto.FacilityRequest;
-import edu.pollub.kindergartenservice.dto.FacilitySummaryResponse;
-import edu.pollub.kindergartenservice.dto.GroupRequest;
-import edu.pollub.kindergartenservice.dto.SchoolClassRequest;
-import edu.pollub.kindergartenservice.model.Facility;
-import edu.pollub.kindergartenservice.model.Group;
-import edu.pollub.kindergartenservice.model.Schedule;
-import edu.pollub.kindergartenservice.model.SchoolClass;
+import edu.pollub.kindergartenservice.dto.*;
+import edu.pollub.kindergartenservice.model.*;
 import edu.pollub.kindergartenservice.repository.*;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Literal;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,14 +27,27 @@ public class FacilityService {
     private ScheduleRepository scheduleRepository;
     private KidRepository kidRepository;
     private AttendanceRepository attendanceRepository;
+    private WebClient.Builder webClientBuilder;
 
     public ResponseEntity<List<Facility>> getAllFacilities() {
         return new ResponseEntity<>(facilityRepository.findAll(), HttpStatus.OK);
     }
 
     public ResponseEntity<Facility> createFacility(FacilityRequest facilityRequest) {
+        AccountResponse principal = webClientBuilder.build().get()
+                .uri("http://account-service/api/users/"+facilityRequest.getPrincipalId())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new WebClientResponseException(HttpStatus.NOT_FOUND, "Principal not found", null, null, null, null))
+                )
+                .bodyToMono(AccountResponse.class)
+                .block();
+        if (principal == null || !principal.getRole().equalsIgnoreCase("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Principal not found");
+        }
         Facility facility = Facility.builder()
                 .name(facilityRequest.getName())
+                .principalId(facilityRequest.getPrincipalId())
                 .build();
         facilityRepository.save(facility);
         return new ResponseEntity<>(facility, HttpStatus.CREATED);
@@ -48,13 +58,12 @@ public class FacilityService {
     }
 
     public ResponseEntity<Group> createGroup(GroupRequest groupRequest) {
-        Optional<Facility> facility = facilityRepository.findById(groupRequest.getFacilityId());
-        if (facility.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Facility not found");
-        }
+        Facility facility = facilityRepository.findById(groupRequest.getFacilityId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Facility not found"));
         Group group = Group.builder()
                 .name(groupRequest.getName())
-                .facility(facility.get())
+                .facility(facility)
+                .teacherId(groupRequest.getTeacherId())
                 .build();
         groupRepository.save(group);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
@@ -76,7 +85,6 @@ public class FacilityService {
         }
         SchoolClass.SchoolClassBuilder schoolClass = SchoolClass.builder()
                 .name(schoolClassRequest.getName())
-                .teacherId(schoolClassRequest.getTeacherId())
                 .group(group.get());
 
         Optional<Schedule> schedule = scheduleRepository.findByDayOfWeekAndStartTimeAndEndTime(
@@ -130,5 +138,55 @@ public class FacilityService {
                 .totalChildren(totalChildren)
                 .build();
 
+    }
+
+    public Group getGroupById(Integer groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
+    }
+
+    private Group findGroupInCollectionByTeacherId(List<Group> groups, Integer teacherId) {
+        return groups.stream().filter(group -> group.getTeacherId().intValue() == teacherId).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group with matching teacher not found"));
+    }
+
+    public List<Employee> getAllEmployees() {
+        AccountResponse[] teachers = webClientBuilder.build().get()
+                .uri("http://account-service/api/account/?role=TEACHER")
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new WebClientResponseException(HttpStatus.NOT_FOUND, "Teacher not found", null, null, null, null))
+                )
+                .bodyToMono(AccountResponse[].class)
+                .block();
+        if (teachers == null || teachers.length == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Teachers not found");
+        }
+        List<AccountResponse> teachersList = Arrays.stream(teachers).toList();
+        List<Group> groups = groupRepository.findAll();
+        return teachersList.stream()
+                .map(teacher -> new Employee(
+                        teacher.getId(),
+                        teacher.getFirstName(),
+                        teacher.getLastName(),
+                        findGroupInCollectionByTeacherId(groups, teacher.getId()).getFacility().getId(),
+                        findGroupInCollectionByTeacherId(groups, teacher.getId()).getId()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<Facility> getAllFacilitiesByPrincipal(Integer principalId) {
+        AccountResponse principal = webClientBuilder.build().get()
+                .uri("http://account-service/api/users/"+principalId)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new WebClientResponseException(HttpStatus.NOT_FOUND, "Principal not found", null, null, null, null))
+                )
+                .bodyToMono(AccountResponse.class)
+                .block();
+        if (principal== null || !principal.getRole().equalsIgnoreCase("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Principal not found");
+        }
+        return facilityRepository.findByPrincipalId(principalId);
     }
 }

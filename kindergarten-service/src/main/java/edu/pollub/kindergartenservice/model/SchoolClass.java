@@ -18,7 +18,6 @@ public class SchoolClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long teacherId;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "schedule_id",
             referencedColumnName = "id")
